@@ -23,12 +23,19 @@ private:
     void handleMessage(char* msg);
     int sendMsg(char* msg);
 
+    int parseMapDate(char* msg);
+
 private:
     int                      m_socketfd;
     std::thread *            m_thrd;
     std::queue<char*>        m_queue;
     std::mutex               m_queue_mtx;
     std::condition_variable  m_queue_cv;
+
+    int  m_ghost[3];     // ghost position
+    int  m_player_p;     // player position
+    int  m_player_d;     // player direction
+    int  m_wall[30];     // wall position
 };
 
 #endif

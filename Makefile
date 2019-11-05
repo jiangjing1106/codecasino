@@ -20,15 +20,19 @@ DEP=$(OBJ:.o=.d) $(TARGET_OBJ:.o=.d)
 
 CXXFLAGS += -std=c++11
 
+TARGETS = client
+
 .PHONY: all clean distclean
 
+all: $(TARGETS)
+
 clean:
-	rm -f $(TARGETS) $(FILE_LIST)
+	rm -f $(TARGETS)
 	find . -name "*.o" -delete
 	find . -name "*.d" -delete
 
 distclean:
-	rm -f $(TARGETS) $(FILE_LIST)
+	rm -f $(TARGETS)
 	find . -name "*.o" -delete
 	find . -name "*.d" -delete
 
@@ -42,6 +46,6 @@ distclean:
 	@$(CXX) -c $< -MM -MT $@ -MF $(@:.o=.d) $(CXXFLAGS) $(CFLAGS)
 	$(CXX) -c $< $(CXXFLAGS) $(CFLAGS) -o $@
 
-all: $(OBJ)
-	$(CXX) -o client $^ $(CXXFLAGS) $(CFLAGS) $(LDFLAGS)
+$(TARGETS): $(OBJ)
+	$(CXX) -o $(TARGETS) $^ $(CXXFLAGS) $(CFLAGS) $(LDFLAGS)
 

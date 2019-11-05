@@ -19,13 +19,13 @@ int main(int argc, char** argv){
     char  recvbuf[RECV_MAXSIZE];
     struct sockaddr_in  servaddr;
 
-    if(argc != 2){
+    if (argc != 2){
         printf("usage: ./client <ipaddress>\n");
         return 0;
     }
 
     // create socket
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);
         return -1;
     }
@@ -36,13 +36,13 @@ int main(int argc, char** argv){
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERVER_PORT);
-    if(inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0){
+    if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0){
         printf("inet_pton error for %s\n",argv[1]);
         return -1;
     }
 
     // connect to server
-    if(connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0){
+    if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0){
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);
         return -1;
     }
@@ -50,11 +50,11 @@ int main(int argc, char** argv){
     // register key
     printf("send key to server \n");
     memset(recvbuf, 0, RECV_MAXSIZE);
-    if(send(sockfd, KEY, strlen(KEY), 0) < 0){
+    if (send(sockfd, KEY, strlen(KEY), 0) < 0){
         printf("send key error: %s(errno: %d)\n", strerror(errno), errno);
         return -1;
     }
-    if(recv(sockfd, &recvbuf, sizeof(recvbuf), 0) < 0) {
+    if (recv(sockfd, &recvbuf, sizeof(recvbuf), 0) < 0) {
         printf("receive msg error: %s(errno: %d)\n", strerror(errno), errno);
         return -1;
     } else {
