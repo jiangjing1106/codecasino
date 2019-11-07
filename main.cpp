@@ -70,10 +70,14 @@ int main(int argc, char** argv){
         } else if (size == 2) {
             printf("receive OK!\n");
             continue;
+        } else if (size == 9) {
+            printf("receive GAME OVER!\n");
+            break;
+        } else {
+            printf("receive %s, size is %d\n", recvbuf, size);
+            // send recvbuf to dispatch element
+            calculatePath->dispatch(recvbuf, size);
         }
-        printf("receive %s, size is %d\n", recvbuf, size);
-        // send recvbuf to dispatch element
-        calculatePath->dispatch(recvbuf, size);
     }
 
     close(sockfd);

@@ -7,20 +7,12 @@
 #include <mutex>
 #include <condition_variable>
 
-#if 1
 typedef struct _position
 {
 	int x;
 	int y;
 }Pos;
-#else
-struct Pos
-{
-	int x;
-	int y;
 
-}
-#endif
 class CalculatePath {
 public:
     CalculatePath(int sockfd);
@@ -44,13 +36,12 @@ private:
 	Pos findHighestScore(char* msg);//3*3
 #endif
 	char getPositionObject_Toplayer(int x, int y, char* msg);
-	char getDirObjectA(char* msg);
-	char getDirObjectS(char* msg);
-	char getDirObjectD(char* msg);
-	char getDirObjectW(char* msg);
 	
 
 	int IsAvailableObject(char object);
+	int HighScoreZoneTowards();
+	void setZoneScore(char* msg);
+	void setObjectAroundPlayer(char* msg);
 	
 
 private:
@@ -65,8 +56,16 @@ private:
 	Pos m_player_p;
 	Pos m_wall[30];
 	Pos m_nextTarget;
+	int m_zoneScore[5][5];
+	Pos m_highScoreZonePos;
     int  _m_player_p;     // player position
     int  m_player_d;     // player direction
+
+	int m_A_object;
+	int m_S_object;
+	int m_D_object;
+	int m_W_object;
+	int m_direct_object;
     //int  m_wall[30];     // wall position
 };
 

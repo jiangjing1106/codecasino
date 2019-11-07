@@ -152,6 +152,7 @@ int CalculatePath::parseMapDate(char* msg) {
         }
 		//cout<<"my pos["<<m_player_p.x+1<<","<<m_player_p.y+1<<"]"<<endl;
     }
+	setObjectAroundPlayer(msg);
     return 0;
 }
 
@@ -165,40 +166,45 @@ int CalculatePath::NextMove(char* msg) {
 	int result = RIGHT;
 	int tempobject = 0;
 	int tempmove = RIGHT;
-	int a_object = 0xFF;
-	int s_object = 0xFF;
-	int d_object = 0xFF;
-	int w_object = 0xFF;
-	
-	a_object = IsAvailableObject(getPositionObject_Toplayer( 0, -1 ,msg ));
-	s_object = IsAvailableObject(getPositionObject_Toplayer( 1, 0, msg ));
-	d_object = IsAvailableObject(getPositionObject_Toplayer( 0, 1, msg ));
-	w_object = IsAvailableObject(getPositionObject_Toplayer( -1, 0, msg ));
 
-	cout<<"   a_object:"<<a_object<<"   s_object:"<<s_object<<"   d_object:"<<d_object<<"   w_object:"<<w_object<<endl;
-	if((a_object!=0xFF)&&(a_object>=tempobject))
+	if((m_A_object!=0xFF)&&(m_A_object>=tempobject))
 	{
 		tempmove = LEFT;
-		tempobject = a_object;
+		tempobject = m_A_object;
 
 	}
-	if((s_object!=0xFF)&&(s_object>=tempobject))
+	if((m_S_object!=0xFF)&&(m_S_object>=tempobject))
 	{
 		tempmove = DOWN;
 
-		tempobject = s_object;
+		tempobject = m_S_object;
 	}
-	if((d_object!=0xFF)&&(d_object>=tempobject))
+	if((m_D_object!=0xFF)&&(m_D_object>=tempobject))
 	{
 		tempmove = RIGHT;
-		tempobject = d_object;
+		tempobject = m_D_object;
 	}
-	if((w_object!=0xFF)&&(w_object>=tempobject))
+	if((m_W_object!=0xFF)&&(m_W_object>=tempobject))
 	{
 		tempmove = UP;
-		tempobject = w_object;
+		tempobject = m_W_object;
 	}
-	result = tempmove;
+	if(0 == tempobject)
+	{
+		setZoneScore(msg);
+		result = HighScoreZoneTowards();
+	}
+	else
+	{
+		if(m_direct_object == tempobject)
+		{
+			result = m_player_d;
+		}
+		else
+		{
+			result = tempmove;
+		}
+	}
 	return	result;
 }
 #if 0
@@ -262,5 +268,91 @@ int CalculatePath::IsAvailableObject(char object)
 	}
 	return result;
 }
+int CalculatePath::HighScoreZoneTowards()
+{
+	int result = DOWN;
 
+	if((m_highScoreZonePos.x<m_player_p.x)&&(m_W_object!=0xFF))
+	{
+		result = UP;
+	}
+	else if((m_highScoreZonePos.x>m_player_p.x)&&(m_D_object!=0xFF))
+	{
+		result = DOWN;
+	}
+	else if((m_highScoreZonePos.y<m_player_p.y)&&(m_A_object!=0xFF))
+	{
+		result = LEFT;
+	}
+	else if((m_highScoreZonePos.y>m_player_p.y)&&(m_S_object!=0xFF))
+	{
+		result = RIGHT;
+	}
+	
+	return result;
+}
+
+void CalculatePath::setZoneScore(char* msg)
+{
+	int tmpHighScore = 0;
+	Pos tmpHighScoreZonePos = {0,0};
+	char tmpObject = ' ';
+	int i,j;
+	int m,n;
+    memset(&m_zoneScore, 0, sizeof(m_zoneScore));
+	//each zone
+	for(i=0; i<5; i++)
+	{
+		for(j=0; j<5; j++)
+		{
+			//zone inside
+			for(m=0;m<=2;m++)
+			{
+				for(n=0;n<=2;n++)
+				{
+					tmpObject = IsAvailableObject(msg[(i+m)*15+(j+n)]);
+					if(0xFF != tmpObject)
+					{
+						m_zoneScore[i][j] += tmpObject;
+					}
+				}
+			}
+			if(m_zoneScore[i][j] >= tmpHighScore)
+			{
+				tmpHighScore = m_zoneScore[i][j];
+				tmpHighScoreZonePos.x = i*3 +1;
+				tmpHighScoreZonePos.y = j*3 +1;
+			}
+		}
+	}
+	m_highScoreZonePos.x = tmpHighScoreZonePos.x;
+	m_highScoreZonePos.y = tmpHighScoreZonePos.y;
+}
+
+void CalculatePath::setObjectAroundPlayer(char* msg)
+{
+	m_A_object = IsAvailableObject(getPositionObject_Toplayer( 0, -1 ,msg ));
+	m_S_object = IsAvailableObject(getPositionObject_Toplayer( 1, 0, msg ));
+	m_D_object = IsAvailableObject(getPositionObject_Toplayer( 0, 1, msg ));
+	m_W_object = IsAvailableObject(getPositionObject_Toplayer( -1, 0, msg ));
+
+	if(m_player_d == UP)
+	{
+		m_direct_object = m_W_object;
+	}
+	else if(m_player_d == DOWN)
+	{
+		m_direct_object = m_S_object;
+	}
+	else if(m_player_d == LEFT)
+	{
+		m_direct_object = m_A_object;
+	}
+	else if(m_player_d == RIGHT)
+	{
+		m_direct_object = m_D_object;
+	}	
+	cout<<"   m_A_object:"<<m_A_object<<"   m_S_object:"<<m_S_object<<"   m_D_object:"<<m_D_object<<"   m_W_object:"<<m_W_object<<endl;
+
+}
 
