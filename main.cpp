@@ -40,7 +40,7 @@ int main(int argc, char** argv){
         printf("inet_pton error for %s\n",argv[1]);
         return -1;
     }
-	printf("1111\r\n");
+    printf("1111\r\n");
     // connect to server
     if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0){
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);

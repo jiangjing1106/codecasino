@@ -9,8 +9,8 @@
 
 typedef struct _position
 {
-	int x;
-	int y;
+    int x;
+    int y;
 }Pos;
 
 class CalculatePath {
@@ -30,19 +30,16 @@ private:
     int sendMsg(char* msg);
 
     int parseMapDate(char* msg);
-	void positionSet(Pos* buff,int ID);
-	int NextMove(char* msg);
-#if 0
-	Pos findHighestScore(char* msg);//3*3
-#endif
-	char getPositionObject_Toplayer(int x, int y, char* msg);
-	
+    void positionSet(Pos* buff,int ID);
+    int NextMove(char* msg);
+    char getPositionObject_Toplayer(int x, int y, char* msg);
+    char getPositionObject(int x, int y, char* msg);
 
-	int IsAvailableObject(char object);
-	int HighScoreZoneTowards();
-	void setZoneScore(char* msg);
-	void setObjectAroundPlayer(char* msg);
-	
+    int IsAvailableObject(char object);
+    void setObjectAroundPlayer(char* msg);
+
+    float getPathScore(int dir, char* msg);
+    bool maybeGhost(int dir);
 
 private:
     int                      m_socketfd;
@@ -53,20 +50,21 @@ private:
 
     //int  m_ghost[3];     // ghost position
     Pos m_ghost[3];
-	Pos m_player_p;
-	Pos m_wall[30];
-	Pos m_nextTarget;
-	int m_zoneScore[5][5];
-	Pos m_highScoreZonePos;
+    Pos m_player_p;
+    Pos m_wall[30];
+    Pos m_nextTarget;
+    int m_zoneScore[5][5];
+    Pos m_highScoreZonePos;
     int  _m_player_p;     // player position
     int  m_player_d;     // player direction
 
-	int m_A_object;
-	int m_S_object;
-	int m_D_object;
-	int m_W_object;
-	int m_direct_object;
+    int m_A_object;
+    int m_S_object;
+    int m_D_object;
+    int m_W_object;
+    int m_direct_object;
     //int  m_wall[30];     // wall position
+    bool m_move_flag[225];
 };
 
 #endif
