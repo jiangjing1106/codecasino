@@ -227,7 +227,35 @@ int CalculatePath::NextMove(char* msg) {
             move_dir = temp_score;
         }
     } else {
-        move_dir = 0;
+        if (m_A_object == 0) {
+            temp_score = LEFT;
+            if (m_player_d == LEFT) {
+                temp_dir = LEFT;
+            }
+        }
+        if (m_S_object == 0) {
+            temp_score = DOWN;
+            if (m_player_d == DOWN) {
+                temp_dir = DOWN;
+            }
+        }
+        if (m_D_object == 0) {
+            temp_score = RIGHT;
+            if (m_player_d == RIGHT) {
+                temp_dir = RIGHT;
+            }
+        }
+        if (m_W_object == 0) {
+            temp_score = UP;
+            if (m_player_d == UP) {
+                temp_dir = UP;
+            }
+        }
+        if (temp_dir != -1) {
+            move_dir = temp_dir;
+        } else {
+            move_dir = temp_score;
+        }
     }
     return move_dir;
 }
@@ -354,7 +382,7 @@ bool CalculatePath::maybeGhost(int dir) {
             break;
         }
     }
-    cout<<dir<<" maybeGhost is "<<result<<endl;
+    cout<<"dir "<<dir<<", maybeGhost is "<<result<<endl;
     return result;
 }
 
@@ -385,7 +413,7 @@ char CalculatePath::getPositionObject(int x, int y, char* msg)
 int CalculatePath::IsAvailableObject(char object)
 {
     int result = 0xFF;
-    if((object>=0x30)&&(object<=0x35))
+    if(((object>=0x30)&&(object<=0x35)))
     {
         result = object -0x30;
     }
